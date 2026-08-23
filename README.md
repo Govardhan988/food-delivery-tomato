@@ -1,4 +1,4 @@
-\# Food Delivery - Docker \& Kubernetes
+&#x20;Food Delivery - Docker \& Kubernetes
 
 
 
@@ -14,7 +14,7 @@ The project demonstrates containerization, Kubernetes orchestration, service dis
 
 
 
-\## 🚀 Project Overview
+&#x20;Project Overview
 
 
 
@@ -42,15 +42,13 @@ Helm is used to package and manage the Kubernetes deployment.
 
 
 
-\---
+
+
+&#x20;Architecture
 
 
 
-\## 🏗️ Architecture
 
-
-
-```text
 
 &#x20;                        Browser
 

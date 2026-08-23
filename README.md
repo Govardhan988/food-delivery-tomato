@@ -14,7 +14,7 @@ The project demonstrates containerization, Kubernetes orchestration, service dis
 
 
 
-\## 🚀 Project Overview
+\ 🚀 Project Overview
 
 
 
@@ -52,51 +52,51 @@ Helm is used to package and manage the Kubernetes deployment.
 
 ```text
 
-&#x20;                        Browser
+                        Browser
 
-&#x20;                           |
+                           |
 
-&#x20;                           v
+                           v
 
-&#x20;                   NGINX Ingress
+                   NGINX Ingress
 
-&#x20;                           |
+                          |
 
-&#x20;            +--------------+--------------+
+           +--------------+--------------+
 
-&#x20;            |              |              |
+            |              |              |
 
-&#x20;            v              v              v
+            v              v              v
 
-&#x20;      food.local     admin.food.local   api.food.local
+      food.local     admin.food.local   api.food.local
 
-&#x20;            |              |              |
+            |              |              |
 
-&#x20;            v              v              v
+            v              v              v
 
-&#x20;      Frontend Service  Admin Service  Backend Service
+      Frontend Service  Admin Service  Backend Service
 
-&#x20;            |              |              |
+            |              |              |
 
-&#x20;            v              v              v
+            v              v              v
 
-&#x20;      Frontend Pods    Admin Pods     Backend Pods
+      Frontend Pods    Admin Pods     Backend Pods
 
-&#x20;                                           |
+                                           |
 
-&#x20;                                           v
+                                           v
 
-&#x20;                                     MongoDB Service
+                                     MongoDB Service
 
-&#x20;                                           |
+                                           |
 
-&#x20;                                           v
+                                           v
 
-&#x20;                                     MongoDB Pod
+                                     MongoDB Pod
 
-&#x20;                                           |
+                                           |
 
-&#x20;                                           v
+                                           v
 
-&#x20;                                         PVC
+                                         PVC
 

@@ -1,1 +1,26 @@
+# Node dependencies
+node_modules/
+
+# Environment files
 .env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+
+# Helm packaged charts
+*.tgz
+
+# Kubernetes secrets
+k8s/backend-secret.yaml
+food-delivery/templates/backend-secret.yaml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/

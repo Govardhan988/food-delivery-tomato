@@ -1,0 +1,48 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: food-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - food-network
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: food-frontend
+    ports:
+      - "3000:80"
+    networks:
+      - food-network
+
+  admin:
+    build:
+      context: ./admin
+    container_name: food-admin
+    ports:
+      - "3001:80"
+    networks:
+      - food-network
+
+  backend:
+    build:
+      context: ./backend
+    container_name: food-backend
+    ports:
+      - "4000:4000"
+    volumes:
+      - food-uploads:/app/uploads
+    depends_on:
+      - mongodb
+    networks:
+      - food-network
+
+networks:
+  food-network:
+
+volumes:
+  food-uploads:
+  mongodb-data:

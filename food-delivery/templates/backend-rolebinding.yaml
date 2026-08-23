@@ -1,0 +1,16 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+
+metadata:
+  name: food-backend-rolebinding
+  namespace: {{ .Release.Namespace }}
+
+subjects:
+  - kind: ServiceAccount
+    name: food-backend-sa
+    namespace: {{ .Release.Namespace }}
+
+roleRef:
+  kind: Role
+  name: food-backend-role
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,5 @@
+backend:
+  replicaCount: 1
+  image:
+    repository: food-backend
+    tag: v3

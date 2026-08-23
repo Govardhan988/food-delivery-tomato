@@ -1,0 +1,43 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+
+metadata:
+  name: food-delivery-ingress
+  namespace: food-delivery-helm
+
+spec:
+  ingressClassName: nginx
+
+  rules:
+    - host: food.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: food-frontend
+                port:
+                  number: 80
+
+    - host: admin.food.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: food-admin
+                port:
+                  number: 80
+
+    - host: api.food.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: food-backend
+                port:
+                  number: 80

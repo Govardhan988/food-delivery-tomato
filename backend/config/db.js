@@ -1,9 +1,16 @@
 import mongoose from "mongoose";
 
-export const  connectDB = async () =>{
+export const connectDB = async () => {
 
-    await mongoose.connect('mongodb+srv://sannifuddin:sannifuddin12345@cluster0.pzvtzcg.mongodb.net/food-del').then(()=>console.log("DB Connected"));
-   
-}
+    const host = process.env.MONGO_HOST;
+    const port = process.env.MONGO_PORT;
+    const database = process.env.MONGO_DATABASE;
+    const username = process.env.MONGO_USERNAME;
+    const password = process.env.MONGO_PASSWORD;
 
+    await mongoose.connect(
+        `mongodb://${username}:${password}@${host}:${port}/${database}?authSource=admin`
+    );
 
+    console.log("DB Connected");
+};

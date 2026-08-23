@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: StatefulSet
+
+metadata:
+  name: mongodb
+  namespace: {{ .Release.Namespace }}
+
+spec:
+  serviceName: mongodb
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: mongodb
+
+  template:
+    metadata:
+      labels:
+        app: mongodb
+
+    spec:
+      containers:
+        - name: mongodb
+          image: mongo:7
+
+          args:
+            - "--auth"
+
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: food-backend-secret
+                  key: MONGO_USERNAME
+
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: food-backend-secret
+                  key: MONGO_PASSWORD
+
+          ports:
+            - containerPort: 27017
+
+          volumeMounts:
+            - name: mongodb-storage
+              mountPath: /data/db
+
+      volumes:
+        - name: mongodb-storage
+          persistentVolumeClaim:
+            claimName: mongodb-pvc

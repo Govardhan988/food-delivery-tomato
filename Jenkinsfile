@@ -11,18 +11,11 @@ pipeline {
             }
         }
 
-        stage('Backend CI') {
-            agent {
-                docker {
-                    image 'node:24-alpine'
-                    reuseNode true
-                }
-            }
+        stage('Backend Dependencies') {
+            agent any
 
             steps {
                 dir('backend') {
-                    sh 'node --version'
-                    sh 'npm --version'
                     sh 'npm ci'
                 }
             }

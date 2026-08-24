@@ -16,7 +16,10 @@ pipeline {
 
             steps {
                 dir('backend') {
+                    sh 'node --version'
+                    sh 'npm --version'
                     sh 'npm ci'
+
                 }
             }
         }

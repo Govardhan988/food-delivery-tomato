@@ -26,5 +26,13 @@ pipeline {
                 }
             }
         }
+
+        stage('Docker Build') {
+            agent any
+
+            steps {
+                sh 'docker build -t food-backend:${BUILD_NUMBER} ./backend'
+            }
+        }
     }
 }

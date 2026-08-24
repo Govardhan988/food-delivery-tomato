@@ -1,17 +1,30 @@
 pipeline {
-    agent any
+    agent none
 
     stages {
+
         stage('Checkout') {
+            agent any
+
             steps {
                 checkout scm
             }
         }
 
-        stage('Verify Code') {
+        stage('Backend CI') {
+            agent {
+                docker {
+                    image 'node:24-alpine'
+                    reuseNode true
+                }
+            }
+
             steps {
-                echo 'Food Delivery source code checked out successfully.'
-                sh 'ls -la'
+                dir('backend') {
+                    sh 'node --version'
+                    sh 'npm --version'
+                    sh 'npm ci'
+                }
             }
         }
     }

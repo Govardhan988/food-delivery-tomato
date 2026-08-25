@@ -3,9 +3,6 @@ pipeline {
 
     stages {
 
-        // ==========================================
-        // 1. CHECKOUT
-        // ==========================================
         stage('Checkout') {
             agent any
 
@@ -14,10 +11,7 @@ pipeline {
             }
         }
 
-        // ==========================================
-        // 2. BACKEND CI
-        // ==========================================
-        stage('Backend Dependencies') {
+        stage('Backend CI') {
             agent any
 
             tools {
@@ -33,9 +27,6 @@ pipeline {
             }
         }
 
-        // ==========================================
-        // 3. FRONTEND CI
-        // ==========================================
         stage('Frontend CI') {
             agent any
 
@@ -53,9 +44,6 @@ pipeline {
             }
         }
 
-        // ==========================================
-        // 4. ADMIN CI
-        // ==========================================
         stage('Admin CI') {
             agent any
 
@@ -73,55 +61,32 @@ pipeline {
             }
         }
 
-        // ==========================================
-        // 5. BUILD ALL DOCKER IMAGES IN PARALLEL
-        // ==========================================
         stage('Docker Build') {
+            agent any
 
             parallel {
 
                 stage('Backend Docker Build') {
-                    agent any
-
                     steps {
-                        sh '''
-                            docker build \
-                                -t food-backend:${BUILD_NUMBER} \
-                                ./backend
-                        '''
+                        sh 'docker build -t govardhantanga/food-backend:${BUILD_NUMBER} ./backend'
                     }
                 }
 
                 stage('Frontend Docker Build') {
-                    agent any
-
                     steps {
-                        sh '''
-                            docker build \
-                                -t food-frontend:${BUILD_NUMBER} \
-                                ./frontend
-                        '''
+                        sh 'docker build -t govardhantanga/food-frontend:${BUILD_NUMBER} ./frontend'
                     }
                 }
 
                 stage('Admin Docker Build') {
-                    agent any
-
                     steps {
-                        sh '''
-                            docker build \
-                                -t food-admin:${BUILD_NUMBER} \
-                                ./admin
-                        '''
+                        sh 'docker build -t govardhantanga/food-admin:${BUILD_NUMBER} ./admin'
                     }
                 }
             }
         }
 
-        // ==========================================
-        // 6. PUSH ALL IMAGES TO DOCKER HUB
-        // ==========================================
-        stage('Push Docker Images') {
+        stage('Docker Push') {
             agent any
 
             steps {
@@ -132,33 +97,37 @@ pipeline {
                         passwordVariable: 'DOCKER_PASSWORD'
                     )
                 ]) {
-
                     sh '''
-                        echo "$DOCKER_PASSWORD" | docker login \
-                            -u "$DOCKER_USERNAME" \
-                            --password-stdin
+                        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-                        docker tag food-backend:${BUILD_NUMBER} \
-                            ${DOCKER_USERNAME}/food-backend:${BUILD_NUMBER}
-
-                        docker tag food-frontend:${BUILD_NUMBER} \
-                            ${DOCKER_USERNAME}/food-frontend:${BUILD_NUMBER}
-
-                        docker tag food-admin:${BUILD_NUMBER} \
-                            ${DOCKER_USERNAME}/food-admin:${BUILD_NUMBER}
-
-                        docker push \
-                            ${DOCKER_USERNAME}/food-backend:${BUILD_NUMBER}
-
-                        docker push \
-                            ${DOCKER_USERNAME}/food-frontend:${BUILD_NUMBER}
-
-                        docker push \
-                            ${DOCKER_USERNAME}/food-admin:${BUILD_NUMBER}
+                        docker push govardhantanga/food-backend:${BUILD_NUMBER}
+                        docker push govardhantanga/food-frontend:${BUILD_NUMBER}
+                        docker push govardhantanga/food-admin:${BUILD_NUMBER}
 
                         docker logout
                     '''
                 }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            agent any
+
+            environment {
+                KUBECONFIG = '/var/jenkins_home/.kube/config'
+            }
+
+            steps {
+                sh '''
+                    kubectl get nodes
+
+                    helm upgrade --install food-delivery ./food-delivery \
+                        --set backend.image.tag=${BUILD_NUMBER} \
+                        --set frontend.image.tag=${BUILD_NUMBER} \
+                        --set admin.image.tag=${BUILD_NUMBER}
+
+                    kubectl get pods
+                '''
             }
         }
     }

@@ -39,7 +39,23 @@ pipeline {
                     sh 'node --version'
                     sh 'npm --version'
                     sh 'npm ci'
-                    
+                    sh 'npm run build'
+                }
+            }
+        }
+
+        stage('Admin CI') {
+            agent any
+
+            tools {
+                nodejs 'Node24'
+            }
+
+            steps {
+                dir('admin') {
+                    sh 'node --version'
+                    sh 'npm --version'
+                    sh 'npm ci'
                     sh 'npm run build'
                 }
             }

@@ -3,6 +3,9 @@ pipeline {
 
     stages {
 
+        // ==========================================
+        // 1. CHECKOUT SOURCE CODE
+        // ==========================================
         stage('Checkout') {
             agent any
 
@@ -11,6 +14,9 @@ pipeline {
             }
         }
 
+        // ==========================================
+        // 2. BACKEND CI
+        // ==========================================
         stage('Backend Dependencies') {
             agent any
 
@@ -27,6 +33,9 @@ pipeline {
             }
         }
 
+        // ==========================================
+        // 3. FRONTEND CI
+        // ==========================================
         stage('Frontend CI') {
             agent any
 
@@ -44,6 +53,9 @@ pipeline {
             }
         }
 
+        // ==========================================
+        // 4. ADMIN CI
+        // ==========================================
         stage('Admin CI') {
             agent any
 
@@ -57,6 +69,51 @@ pipeline {
                     sh 'npm --version'
                     sh 'npm ci'
                     sh 'npm run build'
+                }
+            }
+        }
+
+        // ==========================================
+        // 5. BUILD ALL DOCKER IMAGES IN PARALLEL
+        // ==========================================
+        stage('Docker Build') {
+
+            parallel {
+
+                stage('Backend Docker Build') {
+                    agent any
+
+                    steps {
+                        sh '''
+                            docker build \
+                                -t food-backend:${BUILD_NUMBER} \
+                                ./backend
+                        '''
+                    }
+                }
+
+                stage('Frontend Docker Build') {
+                    agent any
+
+                    steps {
+                        sh '''
+                            docker build \
+                                -t food-frontend:${BUILD_NUMBER} \
+                                ./frontend
+                        '''
+                    }
+                }
+
+                stage('Admin Docker Build') {
+                    agent any
+
+                    steps {
+                        sh '''
+                            docker build \
+                                -t food-admin:${BUILD_NUMBER} \
+                                ./admin
+                        '''
+                    }
                 }
             }
         }

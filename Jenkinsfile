@@ -27,38 +27,20 @@ pipeline {
             }
         }
 
-        stage('Docker Build') {
+        stage('Frontend CI') {
             agent any
 
-            steps {
-                sh 'docker build -t food-backend:${BUILD_NUMBER} ./backend'
+            tools {
+                nodejs 'Node24'
             }
-        }
-
-        stage('Push Docker Image') {
-            agent any
 
             steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'github-ghcr',
-                        usernameVariable: 'GHCR_USER',
-                        passwordVariable: 'GHCR_TOKEN'
-                    )
-                ]) {
-                    sh '''
-                        echo "$GHCR_TOKEN" | docker login ghcr.io \
-                            -u "$GHCR_USER" \
-                            --password-stdin
-
-                        docker tag food-backend:${BUILD_NUMBER} \
-                            ghcr.io/govardhan988/food-backend:${BUILD_NUMBER}
-
-                        docker push \
-                            ghcr.io/govardhan988/food-backend:${BUILD_NUMBER}
-
-                        docker logout ghcr.io
-                    '''
+                dir('frontend') {
+                    sh 'node --version'
+                    sh 'npm --version'
+                    sh 'npm ci'
+                    sh 'npm run lint'
+                    sh 'npm run build'
                 }
             }
         }

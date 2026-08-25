@@ -6,8 +6,6 @@ metadata:
   namespace: {{ .Release.Namespace }}
 
 spec:
-  replicas: {{ .Values.backend.replicaCount }}
-
   selector:
     matchLabels:
       app: food-backend
@@ -23,7 +21,7 @@ spec:
       containers:
         - name: food-backend
           image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
 
           ports:
             - containerPort: 4000
